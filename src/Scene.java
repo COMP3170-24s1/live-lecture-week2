@@ -21,15 +21,12 @@ public class Scene {
 	private int vertexBuffer;
 	private int[] indices;
 	private int indexBuffer;
+	private Vector3f[] colours;
+	private int colourBuffer;
 	private Shader shader;
-	private int screenWidth;
-	private int screenHeight;
 	
-	public Scene(int width, int height) {
-		
-		screenWidth = width;
-		screenHeight = height;
-		
+	public Scene() {
+				
 		// compile the shader
 		shader = ShaderLibrary.instance.compileShader(VERTEX_SHADER,  FRAGMENT_SHADER);
 		
@@ -59,6 +56,16 @@ public class Scene {
 		
 		indexBuffer = GLBuffers.createIndexBuffer(indices);
 		
+		colours = new Vector3f[] {
+				
+				// Colours
+				new Vector3f(1.0f, 1.0f, 1.0f), // White - Air Nation
+				new Vector3f(1.0f,0.0f,0.0f), // Red - Fire Nation
+				new Vector3f(0.0f,1.0f,0.0f), // Green - Earth Nation
+				new Vector3f(0.0f,0.0f,1.0f), // Blue - Water Nation
+		};
+		
+		colourBuffer = GLBuffers.createBuffer(colours);
 	}
 	
 	public void draw() {
@@ -68,12 +75,17 @@ public class Scene {
 		// connect the vertex buffer to the a_position attribute
 		shader.setAttribute("a_position", vertexBuffer);
 		
+		// We are going to use an attribute to set the colour at each vertex - this allows us to create more interesting colour effects.
+		// We will need to pass this into our fragment shader as a varying ("v_colour") from our vertex shader.
+		shader.setAttribute("a_colour", colourBuffer);
+		
 		// bind the buffer
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 		
-		// write the colour value into the u_colour uniform
-		Vector3f colour = new Vector3f(0.0f, 0.75f, 0.50f); // Crystal blue
-		shader.setUniform("u_colour", colour);
+		// write the colour value into the u_colour uniform - Commented out as we are now using vertex colouring via attributes!
+		
+//		Vector3f colour = new Vector3f(0.0f, 0.75f, 0.50f); // Crystal blue
+//		shader.setUniform("u_colour", colour);
 		
 		// draw the shape
 		glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);

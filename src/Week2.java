@@ -37,7 +37,7 @@ public class Week2 implements IWindowListener {
 		
 		new ShaderLibrary(DIRECTORY);
 		
-		scene = new Scene(screenWidth, screenHeight);
+		scene = new Scene();
 		
 		glClearColor(0.25f,0.25f,0.25f,1.0f); // RGBA
 		
